@@ -1,4 +1,4 @@
 from GameLogic.Minefield import Minefield
+from GameLogic.Game import Game
 
-area = Minefield(10, 10)
-area.display()
+game = Game(0)
