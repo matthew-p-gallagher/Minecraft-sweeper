@@ -10,6 +10,9 @@ class Minefield:
 
     def __init__(self, field_size, no_of_mines):
 
+        # save no of mines
+        self.no_of_mines = no_of_mines
+
         # create a minefield - an array of -1 for mine and 0 for empty
         self.mines_only = Minefield._create_minefield(field_size, no_of_mines)
 
@@ -19,6 +22,7 @@ class Minefield:
         # create an overlay for hidden/revealed squares
         # 1's for hidden, 0's for revealed
         self.combined = np.stack((np.ones( self.counted.shape, dtype=int ), self.counted))
+
 
     def _create_minefield(n, b):
 
@@ -142,6 +146,22 @@ class Minefield:
                         if self.combined[0, i, j] != 0:
                             queue.append((i,j))
 
+    def check_cleared(self):
+        """Check if only mines remain - game won"""
+        
+        cleared = False
+
+        # get the number of uncleared mines
+        uncleared = np.sum(self.combined[0])
+
+        # check if minefield has been cleared
+        if uncleared == self.no_of_mines:
+            cleared = True
+
+        return cleared
+
+
+
 
     def display(self):
         print(self.combined)
@@ -152,3 +172,7 @@ if __name__ == "__main__":
 
     area = Minefield(10, 10)
     area.display()
+    area.check_cleared()
+    area.select(0, 9)
+    area.display()
+    area.check_cleared()
