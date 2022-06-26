@@ -10,7 +10,8 @@ class Minefield:
 
     def __init__(self, field_size, no_of_mines):
 
-        # save no of mines
+        # save field_size and no of mines
+        self.field_size = field_size
         self.no_of_mines = no_of_mines
 
         # create a minefield - an array of -1 for mine and 0 for empty

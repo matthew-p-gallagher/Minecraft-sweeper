@@ -8,25 +8,32 @@ class Game:
     GAME_OVER = 1
     GAME_WON = 2
 
-    def __init__(self, mode):
+    def __init__(self):
 
-        # set difficulty mode
-        difficulty_modes = [(10,10), (20,20), (40,50)]
-        difficulty = difficulty_modes[mode]
+        self.set_difficulty()
 
         # minefield for the game with difficulty selected
-        self.minefield = Minefield(*difficulty)
+        self.minefield = Minefield(*self.difficulty)
+        self.minefield.display()
 
         # variable for whether game has been won, lost or is ongoing
         self.game_status = self.GAME_ONGOING
 
+    def set_difficulty(self):
+        """Set the games difficulty mode"""
 
-    def turn(self):
-        self.minefield.display()
+        # Modes by (field_size, no_of_mines)
+        difficulty_modes = [(10,10), (14,40), (20,99)]
 
-        x = int(input("x: "))
-        y = int(input("y: "))
+        # Get input for the mode
+        # Change this to be from minecraft window
+        mode = 1
+        #mode = int(input("Difficulty mode: "))
+        self.difficulty = difficulty_modes[mode]
         
+
+    def turn(self, x, y):
+
         # run selection and set game_status
         game_over = self.minefield.select(x, y)
         if game_over:
@@ -34,6 +41,8 @@ class Game:
 
         elif self.minefield.check_cleared():
             self.game_status = self.GAME_WON
+
+        self.minefield.display()
 
     def game_ending(self):
         if self.game_status == 1:
