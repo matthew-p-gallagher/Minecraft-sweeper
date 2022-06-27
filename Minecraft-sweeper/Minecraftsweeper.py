@@ -76,7 +76,7 @@ def tex_coords(top, bottom, side):
     result.extend(side * 4)
     return result
 
-######## Minesweeper texture mods #########
+
 TEXTURE_PATH = 'Minecraft-sweeper\\texture.png'
 
 GRASS = tex_coords((1, 0), (0, 1), (0, 0))
@@ -107,7 +107,8 @@ FACES = [
 ###########################################
 
 # Minesweeper game instance
-game = Game()
+mode = int(input("Select difficulty (1,2,3): "))
+game = Game(mode)
 
 ###########################################
 

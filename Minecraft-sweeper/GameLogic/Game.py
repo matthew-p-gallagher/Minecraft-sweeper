@@ -8,9 +8,9 @@ class Game:
     GAME_OVER = 1
     GAME_WON = 2
 
-    def __init__(self):
+    def __init__(self, mode):
 
-        self.set_difficulty()
+        self.set_difficulty(mode)
 
         # minefield for the game with difficulty selected
         self.minefield = Minefield(*self.difficulty)
@@ -18,15 +18,12 @@ class Game:
         # variable for whether game has been won, lost or is ongoing
         self.game_status = self.GAME_ONGOING
 
-    def set_difficulty(self):
+    def set_difficulty(self, mode):
         """Set the games difficulty mode"""
 
         # Modes by (field_size, no_of_mines)
-        difficulty_modes = [(4,3), (10,10), (14,40), (18,50)]
+        difficulty_modes = [(4,3), (10,10), (14,40), (18,50), (80, 800)]
 
-        # Get input for the mode
-        # Change this to be from minecraft window
-        mode = 3
         #mode = int(input("Difficulty mode: "))
         self.difficulty = difficulty_modes[mode]
         
