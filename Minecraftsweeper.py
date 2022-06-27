@@ -207,29 +207,12 @@ class Model(object):
         for x in xrange(-n, n, s):
             for z in xrange(-n, n, s):
 
-                # create a layer stone an grass everywhere.
-                #self.add_block((x, y - 10, z), GRASS, immediate=False)
-                #self.add_block((x, y - 11, z), STONE, immediate=False)
-                
                 # lay the base floor
                 self.add_block((x, y - 3, z), STONE, immediate=False)
 
                 # place cover blocks to start
                 self.add_block((x, y - 2, z), MINECOVER, immediate=False)
 
-                # # get value from numpy array
-                # value = minefield.combined[1, i, j]
-
-                # # overlay
-                # if minefield.combined[0, i, j] == 1:
-                #     # get block type for value
-                #     block = VAL_BLOCKS[value + 1]
-
-                #     # add a cover layer
-                #     self.add_block((x, y - 2, z), MINECOVER, immediate=False)
-
-                # # add the associated block
-                # self.add_block((x, y - 3, z), block, immediate=False)
 
 
 
@@ -363,32 +346,23 @@ class Model(object):
         
         self.update_covers()
 
-        if game.game_status == 1:
-            print("GAME OVER - you lost buddy")
-
-        
-        if game.game_status == 2:
-            print("GAME WON - you did it!")
-
 
     def toggle_flag(self, position):
 
         i, j = position_to_array_coords(game.minefield.field_size // 2, position)
-        over = game.minefield.combined[0, i, j]
+        flag = game.minefield.combined[2, i, j]
 
-        if over == 1:
-            # set overlay to flag
-            game.minefield.combined[0, i, j] = 2
-            
-            # replace with flag
+        if flag == 0:
+            # set flag
+            game.minefield.combined[2, i, j] = 1
+
             self.remove_block(position)
             self.add_block(position, FLAG, immediate=True)
 
-        elif over == 2:
-            # set overlay to cover
-            game.minefield.combined[0, i, j] = 1
-            
-            # replace with flag
+        elif flag == 1:
+            # remove flag
+            game.minefield.combined[2, i, j] = 0
+
             self.remove_block(position)
             self.add_block(position, MINECOVER, immediate=True)
 
@@ -594,12 +568,6 @@ class Window(pyglet.window.Window):
         # Velocity in the y (upward) direction.
         self.dy = 0
 
-        # A list of blocks the player can place. Hit num keys to cycle.
-        self.inventory = [MINECOVER,FLAG]
-
-        # The current block the user can place. Hit num keys to cycle.
-        self.block = self.inventory[0]
-
         # Convenience list of num keys.
         self.num_keys = [
             key._1, key._2, key._3, key._4, key._5,
@@ -609,7 +577,9 @@ class Window(pyglet.window.Window):
         self.model = Model()
 
         # The label that is displayed in the top left of the canvas.
-        self.label = pyglet.text.Label('', font_name='Arial', font_size=18,
+        field_size = game.minefield.field_size
+        no_of_mines = game.minefield.no_of_mines
+        self.label = pyglet.text.Label(f'Clear the minefield\nField size: {field_size} x {field_size}\nNo. of mines: {no_of_mines}. Press esc to exit.', font_name='Arial', font_size=24,
             x=10, y=self.height - 10, anchor_x='left', anchor_y='top',
             color=(0, 0, 0, 255))
 
@@ -936,7 +906,7 @@ class Window(pyglet.window.Window):
         self.model.batch.draw()
         self.draw_focused_block()
         self.set_2d()
-        self.draw_label()
+        self.draw_label( game.game_status )
         self.draw_reticle()
 
     def draw_focused_block(self):
@@ -954,14 +924,21 @@ class Window(pyglet.window.Window):
             pyglet.graphics.draw(24, GL_QUADS, ('v3f/static', vertex_data))
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
 
-    def draw_label(self):
+    def draw_label(self, status):
         """ Draw the label in the top left of the screen.
 
         """
-        x, y, z = self.position
-        self.label.text = '%02d (%.2f, %.2f, %.2f) %d / %d' % (
-            pyglet.clock.get_fps(), x, y, z,
-            len(self.model._shown), len(self.model.world))
+
+        if status == 1:
+            self.label.font_size = 40
+            self.label.color=(255, 0, 0, 255)
+            self.label.text = "GAME OVER!"
+        
+        elif status == 2:
+            self.label.font_size = 40
+            self.label.color=(0, 255, 0, 255)
+            self.label.text = "Game won - Bravo!"
+
         self.label.draw()
 
     def draw_reticle(self):
@@ -970,6 +947,7 @@ class Window(pyglet.window.Window):
         """
         glColor3d(0, 0, 0)
         self.reticle.draw(GL_LINES)
+
 
 
 def setup_fog():
@@ -1012,7 +990,7 @@ def setup():
 
 def start_engine():
     
-    window = Window(width=10, height=10, caption='Pyglet', resizable=True)
+    window = Window(width=10, height=10, caption='Minecraftsweeper', resizable=True)
     window.maximize()
     # Hide the mouse cursor and prevent the mouse from leaving the window.
     window.set_exclusive_mouse(True)

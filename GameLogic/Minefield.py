@@ -22,7 +22,11 @@ class Minefield:
 
         # create an overlay for hidden/revealed squares
         # 1's for hidden, 0's for revealed
-        self.combined = np.stack((np.ones( self.counted.shape, dtype=int ), self.counted))
+        self.combined = np.stack((
+            np.ones( self.counted.shape, dtype=int ),
+            self.counted,
+            np.zeros( self.counted.shape, dtype=int )
+        ))
 
 
     def _create_minefield(n, b):
@@ -32,6 +36,7 @@ class Minefield:
         minefield[:b] = -1
 
         # randomise the mine placement
+        np.random.seed(100)
         np.random.shuffle(minefield)
 
         # shape into square grid
