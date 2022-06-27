@@ -8,10 +8,23 @@ This project was built into an existing open source Minecraft game. The Minecraf
 - [Python Minecraft Project](https://github.com/fogleman/Minecraft)
 - [Pyglet Package](https://pyglet.readthedocs.io/en/latest/index.html)
 
-## What I have added
+## Minesweeper modifications
 
-All the game logic for minesweeper was written from scratch. The engine was modified to add actions to play miesweeper and to use minesweeper textures.
+All the game logic for minesweeper was written from scratch. The engine was modified to add minesweeper gameplay elements and to use minesweeper textures.
 
 ## How to run
 
-After cloning the repository - navigate to the root folder in a command prompt terminal, run $pip install requirments (.txt), run $python minecraftsweeper
+- Download the repository
+- Navigate to project root folder in a terminal
+- run:-
+
+
+```console
+pip install -r requirements.txt
+python Minecraft-sweeper
+
+```
+- To exit, press esc to get the mouse and then close window
+
+
+

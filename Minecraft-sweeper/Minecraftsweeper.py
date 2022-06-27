@@ -77,7 +77,7 @@ def tex_coords(top, bottom, side):
     return result
 
 ######## Minesweeper texture mods #########
-TEXTURE_PATH = 'Texture\\texture.png'
+TEXTURE_PATH = 'Minecraft-sweeper\\texture.png'
 
 GRASS = tex_coords((1, 0), (0, 1), (0, 0))
 MINECOVER = tex_coords((1, 1), (1, 1), (1, 1))
