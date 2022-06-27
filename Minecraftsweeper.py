@@ -120,13 +120,13 @@ def position_to_array_coords(n, position):
 
     return i, j
 
-def array_coords_to_position(n, i, j):
+def array_coords_to_position(n, i, y, j):
     """Take position of block and return coords in np array"""
 
     x = j - n
     z = i - n
 
-    return (x, 0, z)
+    return (x, y, z)
 
 
 def normalize(position):
@@ -304,10 +304,7 @@ class Model(object):
         immediate : bool
             Whether or not to immediately remove block from canvas.
 
-        """
-        # input to minesweeper game
-        #i, j = position_to_array_coords(game.minefield.field_size // 2, position)
-        #game.turn( i, j )        
+        """  
         
         del self.world[position]
         self.sectors[sectorize(position)].remove(position)
@@ -316,22 +313,84 @@ class Model(object):
                 self.hide_block(position)
             self.check_neighbors(position)
 
-    def block_transition(self, position):
+
+    def clear_cover(self, position):
 
         # get the block to transistion to from array
-        i, y, j = position
-        overlay, value= game.minefield.combined[:,i,j]
+        x, y, z = position
+
+        # really need to fix all these back and forths
+        i, j = position_to_array_coords(game.minefield.field_size // 2, position)
+
+        value = game.minefield.combined[1, i, j]
 
         texture = VAL_BLOCKS[value + 1]
 
-        self.remove_block(position)
+        if position in self.world:
+            self.remove_block(position)
 
         if value != 0:
             # replace given block if theres a value
             self.add_block(position, texture, immediate=True)
 
+    def update_covers(self):
+
+        overlay = game.minefield.combined[0]
+
+        for i in range(overlay.shape[0]):
+            for j in range(overlay.shape[1]):
+                if overlay[i, j] == 0:
+                    position = array_coords_to_position(overlay.shape[0] // 2, i, -2, j)
+                    self.clear_cover( position )
+
+    def selection(self, position):
+        i, j = position_to_array_coords(game.minefield.field_size // 2, position)
+
+        # game turn can uncover blocks, cause game win or loss
+        game.turn(i, j)
+        self.update_covers()
+
+        if game.game_status != 0:
+            self.game_ending()
+
+    
+    def game_ending(self):
+
+        #clear overlay
+        for i in range(game.minefield.field_size):
+            for j in range(game.minefield.field_size):
+                game.minefield.combined[0, i, j] = 0
+        
+        self.update_covers()
+
+        if game.game_status == 1:
+            print("GAME OVER - you lost buddy")
+
+        
+        if game.game_status == 2:
+            print("GAME WON - you did it!")
 
 
+    def toggle_flag(self, position):
+
+        i, j = position_to_array_coords(game.minefield.field_size // 2, position)
+        over = game.minefield.combined[0, i, j]
+
+        if over == 1:
+            # set overlay to flag
+            game.minefield.combined[0, i, j] = 2
+            
+            # replace with flag
+            self.remove_block(position)
+            self.add_block(position, FLAG, immediate=True)
+
+        elif over == 2:
+            # set overlay to cover
+            game.minefield.combined[0, i, j] = 1
+            
+            # replace with flag
+            self.remove_block(position)
+            self.add_block(position, MINECOVER, immediate=True)
 
 
 
@@ -742,12 +801,11 @@ class Window(pyglet.window.Window):
             if (button == mouse.RIGHT) or \
                     ((button == mouse.LEFT) and (modifiers & key.MOD_CTRL)):
                 # ON OSX, control + left click = right click.
-                if previous:
-                    self.model.add_block(previous, self.block)
+                self.model.toggle_flag(block)
             elif button == pyglet.window.mouse.LEFT and block:
                 texture = self.model.world[block]
                 if texture != STONE:
-                    self.model.block_transition(block)
+                    self.model.selection(block)
         else:
             self.set_exclusive_mouse(True)
 

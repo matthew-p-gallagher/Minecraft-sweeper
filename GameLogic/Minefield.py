@@ -32,8 +32,6 @@ class Minefield:
         minefield[:b] = -1
 
         # randomise the mine placement
-        # TODO remove seed
-        np.random.seed(1000)
         np.random.shuffle(minefield)
 
         # shape into square grid
