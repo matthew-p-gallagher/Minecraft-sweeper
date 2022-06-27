@@ -16,6 +16,7 @@ All the game logic for minesweeper was written from scratch. The engine was modi
 
 - Download the repository
 - Navigate to project root folder in a terminal
+  - Root is name Minecraft-sweeper and has .gitignore, requirements.txt etc.
 - run:-
 
 
