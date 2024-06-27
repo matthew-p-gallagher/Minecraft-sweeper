@@ -1,7 +1,8 @@
 # minecraft-sweeper
 A Minesweeper game in a Python Minecraft engine
 
-![image](https://github.com/matthew-p-gallagher/Minecraft-sweeper/assets/60012816/92c9ffd8-c7a3-44b2-9ad8-11313d383736)
+![screenshot](https://github.com/matthew-p-gallagher/Minecraft-sweeper/assets/60012816/49b94038-3553-4035-ace5-39499c35944b)
+
 
 ## Minecraft Game Engine
 
