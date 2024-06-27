@@ -1,6 +1,8 @@
 # minecraft-sweeper
 A Minesweeper game in a Python Minecraft engine
 
+![image](https://github.com/matthew-p-gallagher/Minecraft-sweeper/assets/60012816/92c9ffd8-c7a3-44b2-9ad8-11313d383736)
+
 ## Minecraft Game Engine
 
 This project was built into an existing open source Minecraft game. The Minecraft engine is written entirely in Python using the pyglet package. It consists of 900 lines of Python code in a single file - an exemplar project for concise and effective code.
